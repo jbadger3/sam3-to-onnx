@@ -1,0 +1,46 @@
+{
+    "image_name": "cars.jpg",
+    "tests": [
+        {
+            "id": "mixed_1",
+            "prompts": [
+                {
+                    "type": "box",
+                    "data": [661, 943, 1007, 1429],
+                    "label": 1
+                },
+                {
+                    "type": "text",
+                    "data": "wheels"
+                }
+            ]
+        },
+        {
+            "id": "text_1",
+            "prompts": [
+                {
+                    "type": "text",
+                    "data": "car"
+                }
+            ]
+        },
+        {
+            "id": "text_2",
+            "prompts": [
+                {
+                    "type": "text",
+                    "data": "seat"
+                }
+            ]
+        },
+        {
+            "id": "box_1",
+            "prompts": [
+                {
+                    "type": "box",
+                    "data": [661, 943, 1007, 1429]
+                }
+            ]
+        }
+    ]
+}

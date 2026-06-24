@@ -1,0 +1,41 @@
+{
+    "image_name": "plants.jpg",
+    "tests": [
+        {
+            "id": "text_1",
+            "prompts": [
+                {
+                    "type": "text",
+                    "data": "leaf"
+                }
+            ]
+        },
+                {
+            "id": "text_2",
+            "prompts": [
+                {
+                    "type": "text",
+                    "data": "potted plant"
+                }
+            ]
+        },
+        {
+            "id": "text_3",
+            "prompts": [
+                {
+                    "type": "text",
+                    "data": "chair"
+                }
+            ]
+        },
+        {
+            "id": "box_1",
+            "prompts": [
+                {
+                    "type": "box",
+                    "data": [1021, 536, 1135, 806]
+                }
+            ]
+        }
+    ]
+}

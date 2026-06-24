@@ -1,0 +1,23 @@
+{
+    "image_name": "pills.jpg",
+    "tests": [
+        {
+            "id": "text_1",
+            "prompts": [
+                {
+                    "type": "text",
+                    "data": "pill"
+                }
+            ]
+        },
+        {
+            "id": "box_1",
+            "prompts": [
+                {
+                    "type": "box",
+                    "data": [348, 441, 390, 482]
+                }
+            ]
+        }
+    ]
+}

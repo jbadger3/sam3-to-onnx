@@ -221,3 +221,7 @@ __marimo__/
 .vscode/
 
 outputs/
+
+#test data output
+tests/data/torch*
+tests/data/onnx*

@@ -34,16 +34,26 @@ def parse_args() -> argparse.Namespace:
         "--parts",
         nargs="+",
         choices=["image_encoder", "text_encoder", "decoder", "all"],
-        default=["image_encoder", "text_encoder"],
+        default=["all"],
         help=(
             "Model parts to quantize. Use one or more of: image_encoder, "
             "text_encoder, decoder, or all. Decoder conversion is deferred."
         ),
     )
+    parser.add_argument(
+        "--use-external-data",
+        action="store_true",
+        default=False,
+        help="Store model weights in external .data files.",
+    )
     return parser.parse_args()
 
 
-def convert_image_encoder_to_mixed_precision(model_path: Path, outputs_dir: Path) -> None:
+def convert_image_encoder_to_mixed_precision(
+    model_path: Path,
+    outputs_dir: Path,
+    use_external_data: bool = False,
+) -> None:
     print(f"Converting image_encoder to mixed precision with ORT optimizer: {model_path}")
     optimized_model = optimizer.optimize_model(
         str(model_path),
@@ -59,11 +69,18 @@ def convert_image_encoder_to_mixed_precision(model_path: Path, outputs_dir: Path
     )
 
     save_path = outputs_dir / "sam3_image_encoder_mixed.onnx"
-    optimized_model.save_model_to_file(str(save_path), use_external_data_format=True)
+    optimized_model.save_model_to_file(
+        str(save_path),
+        use_external_data_format=use_external_data,
+    )
     print(f"Saved mixed precision image encoder to: {save_path}")
 
 
-def convert_text_encoder_to_mixed_precision(model_path: Path, outputs_dir: Path) -> None:
+def convert_text_encoder_to_mixed_precision(
+    model_path: Path,
+    outputs_dir: Path,
+    use_external_data: bool = False,
+) -> None:
     print(f"Converting text_encoder to mixed precision with ORT optimizer: {model_path}")
     optimized_model = optimizer.optimize_model(
         str(model_path),
@@ -77,21 +94,28 @@ def convert_text_encoder_to_mixed_precision(model_path: Path, outputs_dir: Path)
     )
 
     save_path = outputs_dir / "sam3_text_encoder_mixed.onnx"
-    optimized_model.save_model_to_file(str(save_path), use_external_data_format=True)
+    optimized_model.save_model_to_file(
+        str(save_path),
+        use_external_data_format=use_external_data,
+    )
     print(f"Saved mixed precision text encoder to: {save_path}")
 
 
-def convert_decoder_noop_to_mixed(model_path: Path, outputs_dir: Path) -> None:
-    print(f"Performing no-op conversion for decoder with ONNX external data: {model_path}")
+def convert_decoder_noop_to_mixed(
+    model_path: Path,
+    outputs_dir: Path,
+    use_external_data: bool = False,
+) -> None:
+    print(f"Performing no-op conversion for decoder: {model_path}")
     model = onnx.load(str(model_path), load_external_data=True)
 
     save_path = outputs_dir / "sam3_decoder_mixed.onnx"
     onnx.save_model(
         model,
         str(save_path),
-        save_as_external_data=True,
-        all_tensors_to_one_file=True,
-        location=f"{save_path.name}.data",
+        save_as_external_data=use_external_data,
+        all_tensors_to_one_file=use_external_data,
+        location=f"{save_path.name}.data" if use_external_data else None,
         size_threshold=0,
         convert_attribute=False,
     )
@@ -103,6 +127,7 @@ def convert_models_and_save(
     outputs_dir: Path,
     precision: str,
     parts: list[str],
+    use_external_data: bool = False,
 ) -> None:
     if precision != "mixed":
         raise ValueError(f"Unsupported precision: {precision}")
@@ -112,13 +137,25 @@ def convert_models_and_save(
         selected_parts = {"image_encoder", "text_encoder", "decoder"}
 
     if "image_encoder" in selected_parts:
-        convert_image_encoder_to_mixed_precision(model_paths["image_encoder"], outputs_dir)
+        convert_image_encoder_to_mixed_precision(
+            model_paths["image_encoder"],
+            outputs_dir,
+            use_external_data=use_external_data,
+        )
 
     if "text_encoder" in selected_parts:
-        convert_text_encoder_to_mixed_precision(model_paths["text_encoder"], outputs_dir)
+        convert_text_encoder_to_mixed_precision(
+            model_paths["text_encoder"],
+            outputs_dir,
+            use_external_data=use_external_data,
+        )
 
     if "decoder" in selected_parts:
-        convert_decoder_noop_to_mixed(model_paths["decoder"], outputs_dir)
+        convert_decoder_noop_to_mixed(
+            model_paths["decoder"],
+            outputs_dir,
+            use_external_data=use_external_data,
+        )
 
 def main() -> None:
     args = parse_args()
@@ -132,8 +169,15 @@ def main() -> None:
     print(f"Validated {len(model_paths)} ONNX models from {models_dir}")
     print(f"Requested precision: {args.precision}")
     print(f"Requested parts: {args.parts}")
+    print(f"Use external data: {args.use_external_data}")
 
-    convert_models_and_save(model_paths, outputs_dir, args.precision, args.parts)
+    convert_models_and_save(
+        model_paths,
+        outputs_dir,
+        args.precision,
+        args.parts,
+        use_external_data=args.use_external_data,
+    )
 
 
 if __name__ == "__main__":

@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sam3-to-onnx"
+version = "0.1.0"
+description = "Exporter and inference utilities for SAM3 ONNX models"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "huggingface_hub",
+  "torch",
+  "torchvision",
+  "transformers",
+  "accelerate",
+  "onnx",
+  "onnxruntime-gpu; platform_system == 'Linux'",
+  "onnxruntime-directml; platform_system == 'Windows'",
+  "onnxruntime; platform_system != 'Linux' and platform_system != 'Windows'",
+  "opencv-python",
+  "numpy",
+  "pillow",
+  "ftfy",
+  "regex",
+  "pytest",
+  "pycocotools",
+]
+
+[tool.setuptools]
+py-modules = []

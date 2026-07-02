@@ -19,7 +19,7 @@ sys.path.append(str(PROJECT_ROOT / "exportsam3"))
 from exportsam3.onnx_inference import Sam3ONNXInference
 
 
-from utils_for_tests import annotate_image, model_inputs_for_prompts, model_outputs_to_annotations
+from exportsam3.utils import annotate_image, model_inputs_for_prompts, model_outputs_to_annotations
 
 
 def test_onnx_inference_results() -> None:

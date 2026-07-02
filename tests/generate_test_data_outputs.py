@@ -1,6 +1,7 @@
 
 import json
 import gc
+import sys
 from pathlib import Path
 
 import torch
@@ -8,7 +9,15 @@ from transformers.models.sam3.modeling_sam3 import Sam3Model
 from transformers import Sam3Processor
 from PIL import Image
 
-from utils_for_tests import annotate_image, model_outputs_to_annotations, model_inputs_for_prompts, x1y1x2y2_to_xywh
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.append(str(PROJECT_ROOT))
+
+from exportsam3.utils import (
+    annotate_image,
+    model_outputs_to_annotations,
+    model_inputs_for_prompts,
+    x1y1x2y2_to_xywh,
+)
 
 
 def perform_inference_for_prompt_file(

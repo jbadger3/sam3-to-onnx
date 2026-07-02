@@ -7,8 +7,12 @@ import cv2
 import numpy as np
 import onnxruntime as ort
 
-from text_tokenizer import SimpleTokenizer as Tokenizer
-from utils import get_nvidia_lib_paths
+try:
+    from .text_tokenizer import SimpleTokenizer as Tokenizer
+    from .utils import get_nvidia_lib_paths
+except ImportError:
+    from text_tokenizer import SimpleTokenizer as Tokenizer
+    from utils import get_nvidia_lib_paths
 
 
 

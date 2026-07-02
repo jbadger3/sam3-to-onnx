@@ -3,16 +3,12 @@ import json
 import gc
 from pathlib import Path
 
-import numpy as np
 import torch
 from transformers.models.sam3.modeling_sam3 import Sam3Model
 from transformers import Sam3Processor
 from PIL import Image
-from pycocotools import mask as mask_utils
 
 from utils_for_tests import annotate_image, model_outputs_to_annotations, model_inputs_for_prompts, x1y1x2y2_to_xywh
-
-
 
 
 def perform_inference_for_prompt_file(

@@ -52,7 +52,7 @@ Notes:
 
 * All of the optimizations run on CPU and can take a while, so be patient.
 
-## Inference Guide
+## Inference Example
 
 ```python
 
